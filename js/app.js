@@ -1,4 +1,4 @@
-var searchCollission = true;
+var searchCollision = true;
 
 function collided(){
 	for(enem of allEnemies){
@@ -21,14 +21,14 @@ function calculateOverlap(enemy){
 			if(enem.y == enemy.y){
 				//If they overlap
 				if(enemy.x <0){
-					if((enem.x >= enemy.x) && (enemy.x +100)> enem.x){
+					if((enem.x >= enemy.x) && (enemy.x +101)> enem.x){
 					//	alert("1 . New is" +enem.x +"and the other " + enemy.x);
-						enemy.x  = enem.x - 100;
+						enemy.x  = enem.x - 101;
 						overlap = true;
 					}
-					if((enem.x <= enemy.x) && (enem.x +100)> enemy.x){
+					if((enem.x <= enemy.x) && (enem.x +101)> enemy.x){
 					//	alert("2 . New is" +enem.x +"and the other " + enemy.x);
-						enemy.x  = enem.x - 100;
+						enemy.x  = enem.x - 101;
 						overlap = true;
 					}	
 				}				
@@ -51,39 +51,42 @@ var Enemy = function(id) {
 	//Randomly assing the distance to the left where it will begin to appear
 	this.x = Math.floor(Math.random()*5)*-100;
 	//Randomly assign the row
-	this.y = 60 + (83 *Math.floor(Math.random()*3));
-	this.width = 98;
-	this.height = 76;
+	this.y = 135 + (83 *Math.floor(Math.random()*3));
+	this.width = 101;
+	this.height = 73;
 	
 	//Avoid to enemies to be overlaped
 	calculateOverlap(this);
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
+    this.sprite = 'images/enemy-bug2.png';
 };
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
-	this.x  += 60*dt;
-	//It is out of the screen
-	if(this.x > 504)
-	{
-		//Randomly Change the row
-		this.y = 60 + (83 *Math.floor(Math.random()*3));
-		
-		calculateOverlap(this);
-		this.x = -100;
-	}
+	//If we are not searching collision, we should not update the enemies.
+	if(searchCollision){
+		// You should multiply any movement by the dt parameter
+		// which will ensure the game runs at the same speed for
+		// all computers.
+		this.x  += 60*dt;
+		//It is out of the screen
+		if(this.x > 504)
+		{
+			//Randomly Change the row
+			this.y = 135 + (83 *Math.floor(Math.random()*3));
+			
+			calculateOverlap(this);
+			this.x = -100;
+		}
+	};
 	
 };
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 // Now write your own player class
@@ -95,11 +98,11 @@ var Player = function() {
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.sprite = 'images/char-boy.png';
-	this.x = 202;
-	this.y = 405;
-	this.width = 80;
-	this.height = 80;
+    this.sprite = 'images/char-boy2.png';
+	this.x = 215;
+	this.y = 465;
+	this.width = 73;
+	this.height = 90;
 };
 
 // Update the enemy's position, required method for game
@@ -108,9 +111,9 @@ Player.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-	if(searchCollission && collided()){
-		alert("Chocó");
-		searchCollission = false;
+	if(searchCollision && collided()){
+		this.sprite = 'images/char-boy2-dead.png';
+		searchCollision = false;
 	}
 	
 };
