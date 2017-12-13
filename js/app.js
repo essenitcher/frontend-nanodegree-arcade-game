@@ -5,6 +5,9 @@ function collided(){
 		if (player.x < enem.x + enem.width  && player.x + player.width  > enem.x &&
 				player.y < enem.y + enem.height && player.y + player.height > enem.y) {
 			// The objects are touching
+				console.log(player.x + "/" + player.y + "/" +  player.width  + "/" + player.height + "/"+ 
+					enem.x + "/" + enem.y + "/" +  enem.width + "/" + enem.height );
+		
 			return true;
 		}		
 	}
@@ -100,7 +103,7 @@ var Player = function() {
     // a helper we've provided to easily load images
     this.sprite = 'images/char-boy2.png';
 	this.x = 215;
-	this.y = 465;
+	this.y = 460;
 	this.width = 73;
 	this.height = 90;
 };
@@ -125,17 +128,19 @@ Player.prototype.render = function() {
 
 // Draw the enemy on the screen, required method for game
 Player.prototype.handleInput = function(direction) {
-	if(direction == 'up'  && this.y > 0){
-		this.y -= 83;
-	}
-	if(direction == 'down'  && this.y < 405){
-		this.y += 83;
-	}
-	if(direction == 'left'  && this.x > 0){
-		this.x -= 101;
-	}
-	if(direction == 'right'  && this.x < 404){
-		this.x += 101;
+	if(searchCollision){
+		if(direction == 'up'  && this.y > 0){
+			this.y -= 83;
+		}
+		if(direction == 'down'  && this.y < 405){
+			this.y += 83;
+		}
+		if(direction == 'left'  && this.x > 0){
+			this.x -= 101;
+		}
+		if(direction == 'right'  && this.x < 404){
+			this.x += 101;
+		}
 	}
 	
 };
