@@ -40,7 +40,9 @@ PLAYER Entity
 **/
 var Player = function(x, y, width, height, lives, sprite) {
 	Entity.call(this, x, y, width, height, sprite);
-	this.lives = lives;	
+	this.lives = lives;
+	this.targetX = null;
+	this.targetY = null;
 };
 //Inherit methods
 Player.prototype = Object.create(Entity.prototype);
@@ -51,15 +53,54 @@ Player.constructor = Player;
 // Parameter: dt, a time delta between ticks
 Player.prototype.update = function(dt) {
 
+	var speed = 360;
 	//Check if the player has reached the water
-	if(moveEnemies && player.y == 45){
+	if(moveEnemies && player.y <= 61){
 		this.sprite = game.character + '-win.png';
 		moveEnemies = false;
+		this.targetY = null;
+		this.targetX = null;
 		//Wait two seconds and move to the next level
 		setTimeout(function(){
 			game.nextLevel()}, 2000);		
 	}
 
+	if(moveEnemies){
+		//Move the character horizontally
+		if(this.targetX != null){
+			if( this.targetX > this.x){
+				this.x  += speed*dt;
+				//Did i reach?
+				if(this.x >= this.targetX){
+					this.targetX = null;
+				}			
+			}else{
+				this.x  -= speed*dt;
+				//Did i reach?
+				if(this.x <= this.targetX){
+					this.targetX = null;
+				}			
+			}
+		}
+		
+		//Move the character vertically
+		if(this.targetY != null){
+			if( this.targetY > this.y){
+				this.y  += speed*dt;
+				//Did i reach?
+				if(this.y >= this.targetY){
+					this.targetY = null;
+				}
+					
+			}else{
+				this.y  -= speed*dt;
+				//Did i reach?
+				if(this.y <= this.targetY){
+					this.targetY = null;
+				}			
+			}		
+		}
+	}
 };
 
 
@@ -72,6 +113,7 @@ Player.prototype.backToStart = function() {
 
 // Player lose one life
 Player.prototype.loseLife = function() {
+	
     player.lives--;
 	if(player.lives > 0){
 		this.backToStart();	
@@ -82,26 +124,22 @@ Player.prototype.loseLife = function() {
 	}
 };
 
-// Draw the enemy on the screen, required method for game
-Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y, this.width, this.height);
-};
 
 
 // Draw the enemy on the screen, required method for game
 Player.prototype.handleInput = function(direction) {
-	if(moveEnemies){
+	if(moveEnemies && this.targetX == null && this.targetY == null){
 		if(direction == 'up'  && this.y > 0){
-			this.y -= 83;
+			this.targetY = this.y -79;
 		}
-		if(direction == 'down'  && this.y < 405){
-			this.y += 83;
+		if (direction == 'down'  && this.y < 405){
+			this.targetY = this.y +79;
 		}
 		if(direction == 'left'  && this.x > 101){
-			this.x -= 101;
+			this.targetX = this.x - 98;
 		}
 		if(direction == 'right'  && this.x < 404){
-			this.x += 101;
+			this.targetX = this.x + 98;
 		}
 	}
 	
@@ -270,7 +308,7 @@ function initiateEnemies(){
 	// a helper we've provided to easily load images
 	var  enemySprite = 'images/enemy-bug2.png';	
 	
-	for(var i = 0; i < game.enemies; i++){
+	for(var i = 0; i < 0; i++){
 		
 		//Randomly assing the distance to the left where it will begin to appear
 		var posX = (1+Math.floor(Math.random()*5))*-100;
