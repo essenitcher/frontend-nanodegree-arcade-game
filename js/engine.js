@@ -79,8 +79,28 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
     }
+	
+	
+	/* This function checks if the player has collided with a bug
+		* or with a heart */
+	function checkCollisions(){
+		//Check if a bug was touched
+		if(moveEnemies && collided()){
+			player.sprite = game.character + '-dead.png';
+			moveEnemies = false;
+			setTimeout(function(){
+			player.loseLife()}, 2000);
+		}
+		//Check if found heart
+		if(heart.visible && areOverlapping(player,heart)){
+			console.log(player.y + "," + heart.y+ "," +  heart.height + "," + player.height)
+			player.lives++;
+			heart.visible = false;
+		}
+		
+	}
 
     /* This is called by the update function and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls
