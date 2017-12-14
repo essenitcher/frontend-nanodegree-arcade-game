@@ -1,4 +1,4 @@
-var searchCollision = true;
+var moveEnemies = true;
 
 function collided(){
 	for(enem of allEnemies){
@@ -7,42 +7,14 @@ function collided(){
 			// The objects are touching
 				console.log(player.x + "/" + player.y + "/" +  player.width  + "/" + player.height + "/"+ 
 					enem.x + "/" + enem.y + "/" +  enem.width + "/" + enem.height );
-		
 			return true;
 		}		
 	}
 	return false;
 }
 
-//Avoid to enemies to be overlaped
-function calculateOverlap(enemy){
-	var overlap = false;
-	for(enem of allEnemies){
-		//if it is not the same enemy
-		if(enem.id != enemy.id){
-			//If they are in the same row and in negative position
-			if(enem.y == enemy.y){
-				//If they overlap
-				if(enemy.x <0){
-					if((enem.x >= enemy.x) && (enemy.x +101)> enem.x){
-					//	alert("1 . New is" +enem.x +"and the other " + enemy.x);
-						enemy.x  = enem.x - 101;
-						overlap = true;
-					}
-					if((enem.x <= enemy.x) && (enem.x +101)> enemy.x){
-					//	alert("2 . New is" +enem.x +"and the other " + enemy.x);
-						enemy.x  = enem.x - 101;
-						overlap = true;
-					}	
-				}				
-			}
-			
-		}
-	}
-	//if it was overlap, then call it again to check that moving it didn't put the enemy on top of another enemy
-	if(overlap){
-		calculateOverlap(enemy);
-	}
+function reachedWater(){
+	return (player.y == 45);
 }
 
 
@@ -58,8 +30,6 @@ var Enemy = function(id) {
 	this.width = 101;
 	this.height = 73;
 	
-	//Avoid to enemies to be overlaped
-	calculateOverlap(this);
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug2.png';
@@ -69,19 +39,18 @@ var Enemy = function(id) {
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
 	//If we are not searching collision, we should not update the enemies.
-	if(searchCollision){
+	if(moveEnemies){
 		// You should multiply any movement by the dt parameter
 		// which will ensure the game runs at the same speed for
 		// all computers.
-		this.x  += 60*dt;
+		this.x  += game.speed*dt;
 		//It is out of the screen
 		if(this.x > 504)
 		{
 			//Randomly Change the row
 			this.y = 135 + (83 *Math.floor(Math.random()*3));
-			
-			calculateOverlap(this);
-			this.x = -100;
+			//Randomly assing the distance to the left where it will begin to appear
+			this.x = Math.floor(Math.random()*5)*-100;
 		}
 	};
 	
@@ -101,11 +70,12 @@ var Player = function() {
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.sprite = 'images/char-boy2.png';
+    this.sprite = game.character + '.png';
 	this.x = 215;
 	this.y = 460;
-	this.width = 73;
+	this.width = 68;
 	this.height = 90;
+	this.lives = 3;
 };
 
 // Update the enemy's position, required method for game
@@ -114,11 +84,46 @@ Player.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-	if(searchCollision && collided()){
-		this.sprite = 'images/char-boy2-dead.png';
-		searchCollision = false;
+	if(moveEnemies && collided()){
+		this.sprite = game.character + '-dead.png';
+		moveEnemies = false;
+		setTimeout(function(){
+			player.loseLife()}, 2000);
+	}
+	if(moveEnemies && reachedWater()){
+		this.sprite = game.character + '-win.png';
+		moveEnemies = false;
+		//Wait two seconds and move to the next level
+		setTimeout(function(){
+			game.nextLevel()}, 2000);		
 	}
 	
+};
+
+// Moves the player back to the start
+Player.prototype.backToStart = function() {
+    this.sprite = game.character + '.png';
+	this.x = 215;
+	this.y = 460;
+};
+
+// Player lose one life
+Player.prototype.loseLife = function() {
+    player.lives--;
+	if(player.lives > 0){
+		this.backToStart();
+		//Redraw the hearts
+		var hearts ="";	
+		for(var i = 0; i < player.lives; i++){
+			hearts += '<img src="images/heart.png">';
+		}
+		$("#hearts").html(hearts);
+		
+		moveEnemies = true;
+	}else{
+		$("#hearts").html("");
+		alert("YOU LOSE");
+	}
 };
 
 // Draw the enemy on the screen, required method for game
@@ -128,7 +133,7 @@ Player.prototype.render = function() {
 
 // Draw the enemy on the screen, required method for game
 Player.prototype.handleInput = function(direction) {
-	if(searchCollision){
+	if(moveEnemies){
 		if(direction == 'up'  && this.y > 0){
 			this.y -= 83;
 		}
@@ -145,14 +150,59 @@ Player.prototype.handleInput = function(direction) {
 	
 };
 
+// Object for the game
+var Game = function(id) {
+    // Variables applied to each of our instances go here,
+	this.character = 'images/char-boy2';
+	this.level = 1;
+	this.score = 0;
+	this.enemies = 5;
+	this.speed = 60;
+};
+
+
+// Move on to the next Level
+Game.prototype.nextLevel = function() {
+	game.increaseDifficulty();
+	player.backToStart();
+	//Alow movement again
+	moveEnemies = true;
+};
+
+
+// Move on to the next Level
+Game.prototype.increaseDifficulty = function() {
+	game.level++;
+	//Change level in the screen
+	$("#level").text("Level "+ game.level);
+	
+	//Add more speed or more enemies depending on the # of level
+	if(game.level % 2 == 0){
+		//Add speed
+		this.speed += 30;
+	}else{
+		//Add enemies
+		this.enemies++;
+		allEnemies.push(new Enemy(this.enemies-1));
+	}
+};
+
+function initiateEnemies(){
+	allEnemies = [];
+	for(var i = 0; i < game.enemies; i++){
+		allEnemies[i] = new Enemy(i+1);
+	}	
+}
+
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = [];
-//add 5 enemies
-for(var i = 0; i < 5; i++){
-	allEnemies[i] = new Enemy(i+1);
-}
+var game = new Game();
+var allEnemies;
+//add enemies
+initiateEnemies();
+
 var player = new Player();
 
 
