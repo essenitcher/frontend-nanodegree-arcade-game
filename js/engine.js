@@ -94,6 +94,7 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+		heart.update();
     }
 
     /* This function initially draws the "game level", it will then call
@@ -139,8 +140,22 @@ var Engine = (function(global) {
 		}
 
 		renderEntities();
+		updateTexts();
     }
-
+	
+	
+	function updateTexts(){
+		//Redraw lives
+		var hearts ="";	
+		for(var i = 0; i < player.lives; i++){
+			hearts += '<img src="images/heart.png">';
+		}
+		$("#hearts").html(hearts);
+		
+		//Change level in the screen
+		$("#level").text("Level "+ game.level);
+	}
+	
     /* This function is called by the render function and is called on each game
      * tick. Its purpose is to then call the render functions you have defined
      * on your enemy and player entities within app.js
@@ -154,6 +169,7 @@ var Engine = (function(global) {
         });
 
         player.render();
+		heart.render();
     }
 
     /* This function does nothing but it could have been a good place to
@@ -177,7 +193,8 @@ var Engine = (function(global) {
         'images/char-boy.png',
 		'images/char-boy2.png',
 		'images/char-boy2-dead.png',
-		'images/char-boy2-win.png'
+		'images/char-boy2-win.png',
+		'images/Heart.png'
     ]);
     Resources.onReady(init);
 
