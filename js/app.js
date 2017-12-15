@@ -1,8 +1,26 @@
-var moveEnemies = true;
+/** GAME CONTROL */
+var moveEnemies = false;
+var allEnemies;
+var game;
+var player;
+var heart;
+var gameStarted = false;
+
+//Initialises the game's objects
+function initGame(diff, lives){
+	game = new Game(diff);
+	//add enemies
+	initiateEnemies();
+	//Create player
+	player = new Player(215, 460, 68, 90, lives, game.character + '.png');
+	//Create heart
+	heart = new Heart(0, 0, 89, 75, 'images/Heart.png');
+	moveEnemies = false;
+}
 
 function areOverlapping(item, anotherItem){
 	return item.x < anotherItem.x + (anotherItem.width*0.9)  && item.x + (item.width*0.9)  > anotherItem.x &&
-				item.y < anotherItem.y + anotherItem.height && item.y + item.height > anotherItem.y;
+				item.y < anotherItem.y + (anotherItem.height*0.9) && item.y + (item.height*0.9) > anotherItem.y;
 }
 
 
@@ -13,6 +31,40 @@ function collided(){
 		}		
 	}
 	return false;
+}
+
+function assignNewPosition(row, enemyId){
+	var newPos;
+	var isCollision = true;
+	
+	var iteracion = 0;
+	//If there is collision I gotta do repeat the same
+	do{
+		iteracion++;
+		isCollision = false;
+		newPos = (1+Math.floor(Math.random()*5))*-102;
+
+		//check if it is not ovelapping with other enemies
+		for(enemy of allEnemies){
+			//if it is another enemy and it is the same row, and it is not visible
+			if(enemy.id != enemyId && row == enemy.y &&  enemy.x < 0){
+				
+				if((newPos < (enemy.x + enemy.width))  && ((newPos + enemy.width)  > enemy.x)){
+					console.log("CON COLISION " + enemy.id + " esta en fila "+ enemy.y + " col "+enemy.x + " wid "+enemy.width);
+					isCollision = true;
+				}else{
+					console.log("SIN COLISION " + enemy.id + " esta en fila "+ enemy.y + " col "+enemy.x + " wid "+enemy.width);
+				}
+			}else{
+				console.log("EN OTRA FILA O EL  MISMO " + enemy.id + " esta en fila "+ enemy.y + " col "+enemy.x + " wid "+enemy.width);
+			}
+		}	
+			console.log(iteracion + "-" + isCollision);
+	}while(isCollision);
+	
+	console.log(enemyId + " va a fila "+ row + " col "+newPos + " : " + isCollision + "-"+iteracion);
+	return newPos;
+
 }
 
 
@@ -53,7 +105,7 @@ Player.constructor = Player;
 // Parameter: dt, a time delta between ticks
 Player.prototype.update = function(dt) {
 
-	var speed = 360;
+	var speed = 600;
 	//Check if the player has reached the water
 	if(moveEnemies && player.y <= 61){
 		this.sprite = game.character + '-win.png';
@@ -72,12 +124,14 @@ Player.prototype.update = function(dt) {
 				this.x  += speed*dt;
 				//Did i reach?
 				if(this.x >= this.targetX){
+					this.x = this.targetX;
 					this.targetX = null;
 				}			
 			}else{
 				this.x  -= speed*dt;
 				//Did i reach?
 				if(this.x <= this.targetX){
+					this.x = this.targetX;
 					this.targetX = null;
 				}			
 			}
@@ -89,6 +143,7 @@ Player.prototype.update = function(dt) {
 				this.y  += speed*dt;
 				//Did i reach?
 				if(this.y >= this.targetY){
+					this.y = this.targetY;
 					this.targetY = null;
 				}
 					
@@ -96,6 +151,7 @@ Player.prototype.update = function(dt) {
 				this.y  -= speed*dt;
 				//Did i reach?
 				if(this.y <= this.targetY){
+					this.y = this.targetY;
 					this.targetY = null;
 				}			
 			}		
@@ -115,12 +171,18 @@ Player.prototype.backToStart = function() {
 Player.prototype.loseLife = function() {
 	
     player.lives--;
+	//Loses 10 points
+	game.score -= 10;
+	if(game.score < 0){
+		game.score = 0;
+	}
 	if(player.lives > 0){
+		this.targetX = null;
+		this.targetY = null;
 		this.backToStart();	
 		moveEnemies = true;
 	}else{
-		$("#hearts").html("");
-		alert("YOU LOSE");
+		lose();
 	}
 };
 
@@ -130,16 +192,16 @@ Player.prototype.loseLife = function() {
 Player.prototype.handleInput = function(direction) {
 	if(moveEnemies && this.targetX == null && this.targetY == null){
 		if(direction == 'up'  && this.y > 0){
-			this.targetY = this.y -79;
+			this.targetY = this.y -83;
 		}
 		if (direction == 'down'  && this.y < 405){
-			this.targetY = this.y +79;
+			this.targetY = this.y +83;
 		}
 		if(direction == 'left'  && this.x > 101){
-			this.targetX = this.x - 98;
+			this.targetX = this.x - 101;
 		}
 		if(direction == 'right'  && this.x < 404){
-			this.targetX = this.x + 98;
+			this.targetX = this.x + 101;
 		}
 	}
 	
@@ -179,8 +241,8 @@ Enemy.prototype.update = function(dt) {
 			//Randomly Change the row
 			this.y = 135 + (83 *Math.floor(Math.random()*3));
 			//Randomly assign the distance to the left where it will begin to appear
-			this.x = (1+Math.floor(Math.random()*5))*-100;
-
+			this.x = assignNewPosition(this.y, this.id);
+			console.log("Enemy " + this.id + " is placed in line " + this.y + " and between pixels " + this.x + " and " + (this.x+101));
 		}
 	};
 	
@@ -214,7 +276,6 @@ Heart.prototype.update = function(dt) {
 			if(this.notYetShownInLevel && !this.visible){
 				//Decide if it will show up (chances are 1 in 20)
 				var randomNumber = Math.floor(Math.random()*20);
-				console.log("Generating random number to show heart: " +randomNumber );
 				if(randomNumber == 10){
 					//Generate one random place to show
 					var mover = Math.floor(Math.random()*3);
@@ -246,13 +307,21 @@ Heart.prototype.render = function() {
 
 /** Object for the game
 **/
-var Game = function(id) {
+var Game = function(diff) {
     // Variables applied to each of our instances go here,
 	this.character = 'images/char-boy2';
 	this.level = 1;
 	this.score = 0;
-	this.enemies = 5;
-	this.speed = 60;
+	if(diff == 'E'){
+		this.enemies = 2;
+		this.speed = 40;		
+	} else if(diff == 'N'){
+		this.enemies = 10;
+		this.speed = 60;		
+	} else if(diff == 'H'){
+		this.enemies = 5;
+		this.speed = 80;		
+	}
 };
 
 
@@ -266,6 +335,7 @@ Game.prototype.nextLevel = function() {
 	heart.visible = false;
 	//Decide randomly if this level will have a heart
 	heart.notYetShownInLevel = (Math.random() > 0.5);
+	this.score +=1000;
 };
 
 
@@ -278,13 +348,14 @@ Game.prototype.increaseDifficulty = function() {
 		//Add speed
 		this.speed += 30;
 	}else{
-		//Add enemies
-		this.enemies++;
-		//Randomly assing the distance to the left where it will begin to appear
-		var posX = (1+Math.floor(Math.random()*5))*-100;
-		
+
 		//Randomly assign the row
 		var posY = 135 + (83 *Math.floor(Math.random()*3));
+
+		//Randomly assing the distance to the left where it will begin to appear
+		var posX = assignNewPosition(posY, this.enemies+1);
+		
+		console.log("Enemy " + (this.enemies+1) + " is placed in line " + posY + " and between pixels " + posX + " and " + (posX+101));
 
 		var enemyWidth = 101;
 		var enemyHeight = 73;
@@ -292,6 +363,9 @@ Game.prototype.increaseDifficulty = function() {
 		// The image/sprite for our enemies, this uses
 		// a helper we've provided to easily load images
 		var  enemySprite = 'images/enemy-bug2.png';	
+		
+		//Add enemies
+		this.enemies++;
 		
 		allEnemies.push(new Enemy(this.enemies, posX, posY, enemyWidth, enemyHeight, enemySprite));
 	}
@@ -308,13 +382,16 @@ function initiateEnemies(){
 	// a helper we've provided to easily load images
 	var  enemySprite = 'images/enemy-bug2.png';	
 	
-	for(var i = 0; i < 0; i++){
-		
-		//Randomly assing the distance to the left where it will begin to appear
-		var posX = (1+Math.floor(Math.random()*5))*-100;
+	for(var i = 0; i < game.enemies; i++){
 
 		//Randomly assign the row
 		var posY = 135 + (83 *Math.floor(Math.random()*3));		
+	
+		//Randomly assing the distance to the left where it will begin to appear
+		var posX = assignNewPosition(posX, i+1);
+		
+		console.log("Enemy " + (i+1) + " is placed in line " + posY + " and between pixels " + posX + " and " + (posX+101));
+
 		allEnemies[i] = new Enemy(i+1, posX, posY, enemyWidth, enemyHeight, enemySprite);
 	}	
 }
@@ -323,14 +400,7 @@ function initiateEnemies(){
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var game = new Game();
-//add enemies
-var allEnemies;
-initiateEnemies();
-//Create player
-var player = new Player(215, 460, 68, 90, 3, game.character + '.png');
-//Create heart
-var heart = new Heart(0, 0, 89, 75, 'images/Heart.png');
+initGame('N',3);
 
 
 // This listens for key presses and sends the keys to your

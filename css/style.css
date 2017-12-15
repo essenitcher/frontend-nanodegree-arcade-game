@@ -1,3 +1,58 @@
 body {
     text-align: center;
+	font-family : "Arial Black", Gadget, sans-serif;
+	color : #3f4caf;
+}
+
+.d-visible{
+	width:100%;
+	height:550px;
+	position:fixed;
+	top:50px;
+	border-style: outset;
+	background : linear-gradient(0deg, #c0f9c7 0%, white 100%);
+}
+
+.d-invisible{
+	position:fixed;
+	top:50px;
+	visibility: hidden;
+}
+
+.newGame{
+	background-color: #5A71D9;
+	font-size: 24px;
+	border-radius: 8px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;	
+	padding : 20px;
+	color : white;
+	font-family : "Arial Black", Gadget, sans-serif;
+}
+
+.newGame:hover {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+.invisible{
+	visibility: hidden;
+}
+
+#lives{
+	font-family : "Arial Black", Gadget, sans-serif;
+	color : #3f4caf;
+	margin : 2px;
+}
+
+#hearts{
+	display:inline-block;
+}
+
+.heartImg{
+	height:25px;
+	width:25px;
+	vertical-align: middle
+	
+
 }

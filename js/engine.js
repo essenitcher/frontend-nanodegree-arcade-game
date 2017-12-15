@@ -25,7 +25,7 @@ var Engine = (function(global) {
         lastTime;
 
     canvas.width = 505;
-    canvas.height = 606;
+	canvas.height = 656;
     doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
@@ -158,22 +158,28 @@ var Engine = (function(global) {
 				ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
 			}
 		}
-
-		renderEntities();
-		updateTexts();
+		if(gameStarted){
+			renderEntities();
+			updateTexts();
+		}
     }
 	
 	
 	function updateTexts(){
+		//Redraw level
+		ctx.textAlign="left";
+		ctx.font = "30px Georgia";
+		ctx.fillText("Level "+ game.level, 0, 616);
+		
 		//Redraw lives
 		var hearts ="";	
 		for(var i = 0; i < player.lives; i++){
-			hearts += '<img src="images/heart.png">';
+			ctx.drawImage(Resources.get('images/Heart.png'), 505-31*(i+1), 590, 30, 30);
 		}
-		$("#hearts").html(hearts);
 		
-		//Change level in the screen
-		$("#level").text("Level "+ game.level);
+		//Redraw score
+		ctx.textAlign="center";
+		ctx.fillText("Score " + game.score, 252, 646);
 	}
 	
     /* This function is called by the render function and is called on each game
