@@ -1,6 +1,26 @@
-frontend-nanodegree-arcade-game
-===============================
+# Frogger Arcade Game Project
 
-Students should use this [rubric](https://review.udacity.com/#!/projects/2696458597/rubric) for self-checking their submission. Make sure the functions you write are **object-oriented** - either class functions (like Player and Enemy) or class prototype functions such as Enemy.prototype.checkCollisions, and that the keyword 'this' is used appropriately within your class and class prototype functions to refer to the object the function is called upon. Also be sure that the **readme.md** file is updated with your instructions on both how to 1. Run and 2. Play your arcade game.
+## Table of Contents
 
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
+* [Creation](#creation)
+* [How to Play](#how-to-play)
+* [Resources](#resources)
+* [Contributing](#contributing)
+
+
+## Creation
+
+This is a frogger like game which was creating using html, canvas, css and javascript. 
+All application behavior can be found in the javascript file (app.js and messages.js).
+
+## How to Play
+Once the page loads, you can choose the difficulty of the game and the quantity of lives you wanna start the game with.
+Then press start game to enjoy. The objective of the game is to reach the water at the top of the screen without being touched by those evil ladybugs! *Good Luck!*
+
+## Resources
+External library  Jquery was added to improve the application. 
+
+
+## Contributing
+No contribution is required since it is a personal project, but feel free to download it and play with everything you see in the code.
+
