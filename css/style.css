@@ -1,42 +1,60 @@
 body {
-    text-align: center;
+    text-align : center;
 	font-family : "Arial Black", Gadget, sans-serif;
 	color : #3f4caf;
 }
 
 .d-visible{
-	width:100%;
-	height:550px;
-	position:fixed;
-	top:50px;
-	border-style: outset;
+	width : 100%;
+	height : 550px;
+	position : fixed;
+	top : 50px;
+	border-style : outset;
 	background : linear-gradient(0deg, #c0f9c7 0%, white 100%);
 }
 
 .d-invisible{
-	position:fixed;
-	top:50px;
-	visibility: hidden;
+	position : fixed;
+	top : 50px;
+	visibility : hidden;
 }
 
 .newGame{
-	background-color: #5A71D9;
-	font-size: 24px;
-	border-radius: 8px;
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;	
+	background-color : #5A71D9;
+	font-size : 24px;
+	border-radius : 8px;
+    -webkit-transition-duration : 0.4s; /* Safari */
+    transition-duration : 0.4s;	
 	padding : 20px;
 	color : white;
 	font-family : "Arial Black", Gadget, sans-serif;
 }
 
 .newGame:hover {
-    background-color: #4CAF50; /* Green */
-    color: white;
+    background-color : #4CAF50; /* Green */
+    color : white;
+}
+
+
+.showHideButton{
+	background-color : #5A71D9;
+	font-size : 16px;
+	border-radius : 8px;
+    -webkit-transition-duration : 0.4s; /* Safari */
+    transition-duration : 0.4s;	
+	padding : 10px;
+	margin-bottom : 5px;
+	color : white;
+	font-family : "Arial Black", Gadget, sans-serif;
+}
+
+.showHideButton:hover {
+    background-color : #4CAF50; /* Green */
+    color : white;
 }
 
 .invisible{
-	visibility: hidden;
+	visibility : hidden;
 }
 
 #lives{
@@ -46,13 +64,16 @@ body {
 }
 
 #hearts{
-	display:inline-block;
+	display : inline-block;
 }
 
 .heartImg{
-	height:25px;
-	width:25px;
-	vertical-align: middle
-	
+	height : 25px;
+	width : 25px;
+	vertical-align : middle
+}
 
+.keyImg{
+	height : 60px;
+	width : 60px;
 }

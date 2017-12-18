@@ -1,5 +1,6 @@
 /*** MESSAGES CONTROL FUNCTIONS */
 
+//Creates a new game
 function newGame(){
 	
 	var diff = $('input[name=difficulty]:checked').val();
@@ -14,10 +15,13 @@ function newGame(){
 	$("#button").addClass("newGame-invisible");	
 	$("#d").removeClass("d-visible");
 	$("#d").addClass("d-invisible");
+	$("#joystick").removeClass("invisible");
+	
 	gameStarted = true;
 
 }
 
+//Changes the qty of lives that the player will start the game with
 function changeLives(){
 	
 	var lives = $('input[name=lives]').val();
@@ -40,6 +44,7 @@ function changeLives(){
 	$("#hearts").html(html);
 }
 
+//Shows the game over pop up
 function lose(){
 	//add lose msg
 	$("#title").text("Game Over");
@@ -50,11 +55,25 @@ function lose(){
 	$("#button").addClass("newGame");
 	$("#d").removeClass("d-invisible");	
 	$("#d").addClass("d-visible");
+	$("#joystick").addClass("invisible");
 	gameStarted = false;
 }
 
-function stop(){
-	moveEnemies = !moveEnemies;
+//Hides and shows the joystick buttons (helpful while playing from a portable device)
+function showHideJoystick(){
+	if($("#joystickButtons2").hasClass("invisible")){
+		$("#joystickButtons2").removeClass("invisible");
+		$("#showHide").text("Hide Joystick");
+	}else{
+		$("#joystickButtons2").addClass("invisible");
+		$("#showHide").text("Show Joystick");
+	}
+	
+	if($("#joystickButtons1").hasClass("invisible")){
+		$("#joystickButtons1").removeClass("invisible");
+	}else{
+		$("#joystickButtons1").addClass("invisible");
+	}
 }
 
 $(function(){
@@ -63,5 +82,10 @@ $(function(){
 	
 	$("#lives").change(changeLives);
 	
-	$("#stop").click(stop);
+	$("#showHide").click(showHideJoystick);
+	
+	$("#up").click(moveUp);
+	$("#down").click(moveDown);
+	$("#left").click(moveLeft);
+	$("#right").click(moveRight);
 });

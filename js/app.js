@@ -18,12 +18,13 @@ function initGame(diff, lives){
 	moveEnemies = false;
 }
 
+//Check if two images are overlapping 
 function areOverlapping(item, anotherItem){
 	return item.x < anotherItem.x + (anotherItem.width*0.9)  && item.x + (item.width*0.9)  > anotherItem.x &&
 				item.y < anotherItem.y + (anotherItem.height*0.9) && item.y + (item.height*0.9) > anotherItem.y;
 }
 
-
+//Checks if the player collided with an enemy
 function collided(){
 	for(enem of allEnemies){
 		if (areOverlapping(player, enem)) {
@@ -33,36 +34,35 @@ function collided(){
 	return false;
 }
 
+//function to place the enemy in a new position of the screen (Called when it reached the right margin)
 function assignNewPosition(row, enemyId){
 	var newPos;
 	var isCollision = true;
 	
-	var iteracion = 0;
+	var iteration = 0;
 	//If there is collision I gotta do repeat the same
 	do{
-		iteracion++;
+		iteration++;
 		isCollision = false;
-		newPos = (1+Math.floor(Math.random()*5))*-102;
-
+		//I check the iteration in order to avoid entering an infinite loop in the case that there are too many enemies in the same line and a new one does not fit
+		if(iteration < 3){
+			newPos = (1+Math.floor(Math.random()*5))*-102;
+		}else{
+			newPos -= 202;
+		}
 		//check if it is not ovelapping with other enemies
 		for(enemy of allEnemies){
 			//if it is another enemy and it is the same row, and it is not visible
 			if(enemy.id != enemyId && row == enemy.y &&  enemy.x < 0){
-				
 				if((newPos < (enemy.x + enemy.width))  && ((newPos + enemy.width)  > enemy.x)){
-					console.log("CON COLISION " + enemy.id + " esta en fila "+ enemy.y + " col "+enemy.x + " wid "+enemy.width);
 					isCollision = true;
-				}else{
-					console.log("SIN COLISION " + enemy.id + " esta en fila "+ enemy.y + " col "+enemy.x + " wid "+enemy.width);
 				}
-			}else{
-				console.log("EN OTRA FILA O EL  MISMO " + enemy.id + " esta en fila "+ enemy.y + " col "+enemy.x + " wid "+enemy.width);
 			}
 		}	
-			console.log(iteracion + "-" + isCollision);
+
 	}while(isCollision);
 	
-	console.log(enemyId + " va a fila "+ row + " col "+newPos + " : " + isCollision + "-"+iteracion);
+
 	return newPos;
 
 }
@@ -242,7 +242,6 @@ Enemy.prototype.update = function(dt) {
 			this.y = 135 + (83 *Math.floor(Math.random()*3));
 			//Randomly assign the distance to the left where it will begin to appear
 			this.x = assignNewPosition(this.y, this.id);
-			console.log("Enemy " + this.id + " is placed in line " + this.y + " and between pixels " + this.x + " and " + (this.x+101));
 		}
 	};
 	
@@ -316,7 +315,7 @@ var Game = function(diff) {
 		this.enemies = 2;
 		this.speed = 40;		
 	} else if(diff == 'N'){
-		this.enemies = 10;
+		this.enemies = 3;
 		this.speed = 60;		
 	} else if(diff == 'H'){
 		this.enemies = 5;
@@ -354,8 +353,6 @@ Game.prototype.increaseDifficulty = function() {
 
 		//Randomly assing the distance to the left where it will begin to appear
 		var posX = assignNewPosition(posY, this.enemies+1);
-		
-		console.log("Enemy " + (this.enemies+1) + " is placed in line " + posY + " and between pixels " + posX + " and " + (posX+101));
 
 		var enemyWidth = 101;
 		var enemyHeight = 73;
@@ -389,13 +386,31 @@ function initiateEnemies(){
 	
 		//Randomly assing the distance to the left where it will begin to appear
 		var posX = assignNewPosition(posX, i+1);
-		
-		console.log("Enemy " + (i+1) + " is placed in line " + posY + " and between pixels " + posX + " and " + (posX+101));
 
 		allEnemies[i] = new Enemy(i+1, posX, posY, enemyWidth, enemyHeight, enemySprite);
 	}	
 }
 
+
+/**
+functions to move with the joytstick
+*/
+//Moves the player up
+function moveUp(){
+	player.handleInput('up');
+}
+//Moves the player down
+function moveDown(){
+	player.handleInput('down');
+}
+//Moves the player left
+function moveLeft(){
+	player.handleInput('left');
+}
+//Moves the player right
+function moveRight(){
+	player.handleInput('right');
+}
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies

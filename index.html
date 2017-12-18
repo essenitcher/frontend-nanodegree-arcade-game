@@ -11,10 +11,20 @@
     <script src="js/resources.js"></script>
     <script src="js/app.js"></script>
     <script src="js/engine.js"></script>
-	<button id="stop" class="newGame">stop</button>
+	<div id="joystick"  class="invisible">
+		<button id="showHide" class="showHideButton">Show Joystick</button>
+		<div id="joystickButtons1" class="invisible">
+			<img id="up" src="images/key-up.png" class="keyImg" alt="UP">
+		</div>
+		<div id="joystickButtons2" class="invisible">
+			<img id="left" src="images/key-left.png" class="keyImg" alt="LEFT">
+			<img id="down" src="images/key-down.png" class="keyImg" alt="DOWN">
+			<img id="right" src="images/key-right.png" class="keyImg" alt="RIGHT">
+		</div>		
+	</div>
 	<div id="d" class="d-visible">
-		<h1 id="title">Welcome to Mauro's Frogger<h1>
-		<h3 id="results"></h3>
+		<h1 id="title">Welcome to Mauro's Frogger</h1>
+		<h3 id="results">&nbsp;</h3>
 		<button id="button" class="newGame">New Game</button>
 		<div>
 			<p>Select game's Difficulty</p>
@@ -26,9 +36,9 @@
 		<input id="lives" type="number" name="lives" value="3" min="1" max="5" step="1"/>
 		<div>
 			<div id="hearts">
-				<img class="heartImg" src="images/Heart.png">
-				<img class="heartImg" src="images/Heart.png">
-				<img class="heartImg" src="images/Heart.png">
+				<img class="heartImg" src="images/Heart.png" alt="HEART">
+				<img class="heartImg" src="images/Heart.png" alt="HEART">
+				<img class="heartImg" src="images/Heart.png" alt="HEART">
 			</div>
 		</div>
 	</div>
