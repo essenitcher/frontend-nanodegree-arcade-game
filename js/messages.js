@@ -26,7 +26,7 @@ function changeLives(){
 	
 	var lives = $('input[name=lives]').val();
 	
-	if(lives%1 != 0){
+	if(lives%1 !== 0){
 		lives = Math.floor(lives);
 	}
 	if(lives > 5){
@@ -49,7 +49,7 @@ function lose(){
 	//add lose msg
 	$("#title").text("Game Over");
 	//add status
-	$("#results").text("Congratulations! You've reached level " +  game.level + " with a total score of " +  game.score +  " points")
+	$("#results").text("Congratulations! You've reached level " +  game.level + " with a total score of " +  game.score +  " points");
 	//Show the div	
 	$("#button").removeClass("newGame-invisible");	
 	$("#button").addClass("newGame");
@@ -84,8 +84,16 @@ $(function(){
 	
 	$("#showHide").click(showHideJoystick);
 	
-	$("#up").click(moveUp);
-	$("#down").click(moveDown);
-	$("#left").click(moveLeft);
-	$("#right").click(moveRight);
+	$("#up").click(function(){
+		player.handleInput('up');
+	});	
+	$("#down").click(function(){
+		player.handleInput('down');
+	});
+	$("#left").click(function(){
+		player.handleInput('left');
+	});
+	$("#right").click(function(){
+		player.handleInput('right');
+	});
 });

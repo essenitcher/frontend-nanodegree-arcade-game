@@ -87,15 +87,14 @@ var Engine = (function(global) {
 		* or with a heart */
 	function checkCollisions(){
 		//Check if a bug was touched
-		if(moveEnemies && collided()){
+		if(moveEnemies && player.collided()){
 			player.sprite = game.character + '-dead.png';
 			moveEnemies = false;
 			setTimeout(function(){
 			player.loseLife()}, 2000);
 		}
 		//Check if found heart
-		if(heart.visible && areOverlapping(player,heart)){
-			console.log(player.y + "," + heart.y+ "," +  heart.height + "," + player.height)
+		if(heart.visible && player.areOverlapping(heart)){
 			player.lives++;
 			heart.visible = false;
 		}

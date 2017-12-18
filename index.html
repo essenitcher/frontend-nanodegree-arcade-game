@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+	<meta name=viewport content="width=device-width, initial-scale=1">
     <title>Effective JavaScript: Mauro's Frogger</title>
     <link rel="stylesheet" href="css/style.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -33,9 +34,9 @@
 			<input type="radio" name="difficulty" value="H"> Hard
 		</div>
 		<p>Select initial hearts</p>
-		<input id="lives" type="number" name="lives" value="3" min="1" max="5" step="1"/>
+		<input class="lives" type="number" name="lives" value="3" min="1" max="5" step="1"/>
 		<div>
-			<div id="hearts">
+			<div class="hearts">
 				<img class="heartImg" src="images/Heart.png" alt="HEART">
 				<img class="heartImg" src="images/Heart.png" alt="HEART">
 				<img class="heartImg" src="images/Heart.png" alt="HEART">
